@@ -1,6 +1,6 @@
 # Default ignored files
 /shelf/
-/workspace.xml
+/.idea/workspace.xml
 # Datasource local storage ignored files
 /dataSources/
 /dataSources.local.xml
@@ -35,7 +35,6 @@ hs_err_pid*
 ### Gradle ###
 .gradle
 build/
-
 # Ignore Gradle GUI config
 gradle-app.setting
 
