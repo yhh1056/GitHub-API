@@ -1,8 +1,9 @@
 package src;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.kohsuke.github.GHIssue;
 import org.kohsuke.github.GHIssueComment;
 import org.kohsuke.github.GHRepository;
@@ -26,22 +27,38 @@ public class App {
 
     public void connect() throws IOException {
         this.gitHub = builder.withOAuthToken(OAuthToken).build();
+        System.out.println("=====");
+
         this.gitHub = GitHub.connect();
         GHRepository repository = getRepository(ADDRESS);
+        System.out.println("=====");
 
-        Participants participants = new Participants();
-        /**
-         * 테스트용 이슈를 3개 만듦
-         */
+        Map<String, Integer> attendance = new HashMap<>();
         for (int index = 1; index <= 3; index++) {
             GHIssue issue = repository.getIssue(index);
             List<GHIssueComment> comments = issue.getComments();
 
             for (GHIssueComment comment : comments) {
-                participants.addParticipant(comment.getUser().getName(), index);
+                final String name = comment.getUser().getName();
 
+                if (attendance.containsKey(name)) {
+                    int check = attendance.get(name);
+                    attendance.put(name, check + 1);
+                } else {
+                    attendance.put(name, 1);
+                }
             }
         }
+
+        Map<String, Double> result = new HashMap<>();
+
+        for (String username : attendance.keySet()) {
+            double check = attendance.get(username);
+            double per = check / 18 * 100;
+            result.put(username, Math.round(per * 100) / 100.0);
+        }
+
+        System.out.println(result);
     }
 
     private GHRepository getRepository(String address) throws IOException {
